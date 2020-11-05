@@ -3,6 +3,7 @@ package dao
 import (
 	"github.com/go-programming-tour-book/blog-service/internal/model"
 	"github.com/go-programming-tour-book/blog-service/pkg/app"
+	"log"
 )
 
 func (d *Dao) GetTag(id uint32, state uint8) (model.Tag, error) {
@@ -45,13 +46,13 @@ func (d *Dao) UpdateTag(id uint32, name string, state uint8, modifiedBy string) 
 		},
 	}
 	values := map[string]interface{}{
-		"state":       state,
+		"state":       state, //state没传 默认是0值
 		"modified_by": modifiedBy,
 	}
 	if name != "" {
 		values["name"] = name
 	}
-
+	log.Println(values)
 	return tag.Update(d.engine, values)
 }
 

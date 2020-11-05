@@ -36,10 +36,11 @@ func NewRouter() *gin.Engine {
 		r.Use(middleware.Recovery())
 	}
 
+	//注册中间件
 	r.Use(middleware.Tracing())
 	r.Use(middleware.RateLimiter(methodLimiters))
 	r.Use(middleware.ContextTimeout(global.AppSetting.DefaultContextTimeout))
-	r.Use(middleware.Translations())
+	r.Use(middleware.Translations()) //国际化处理
 
 	article := v1.NewArticle()
 	tag := v1.NewTag()

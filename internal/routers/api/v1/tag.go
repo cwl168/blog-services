@@ -31,7 +31,7 @@ func (t Tag) List(c *gin.Context) {
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
 		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
-		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...)) //errs.Errors()返回是字符串切片
 		return
 	}
 
@@ -96,6 +96,7 @@ func (t Tag) Create(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags/{id} [put]
 func (t Tag) Update(c *gin.Context) {
+	//验证请求参数
 	param := service.UpdateTagRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
