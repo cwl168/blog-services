@@ -6,6 +6,7 @@ import (
 	"log"
 )
 
+//在dao层进行了数据访问对象的封装，并对 业务所需的字段进行了处理。
 func (d *Dao) GetTag(id uint32, state uint8) (model.Tag, error) {
 	tag := model.Tag{Model: &model.Model{ID: id}, State: state}
 	return tag.Get(d.engine)
@@ -40,6 +41,16 @@ func (d *Dao) CreateTag(name string, state uint8, createdBy string) error {
 }
 
 func (d *Dao) UpdateTag(id uint32, name string, state uint8, modifiedBy string) error {
+
+	/*
+		修改标签的时，state不会改变
+		tag := model.Tag{
+			Name:  name,
+			State: state,
+			Model: &model.Model{ID: id, ModifiedBy: modifiedBy},
+		}
+		return tag.Update2(d.engine)*/
+	//修改标签的时，state变为0
 	tag := model.Tag{
 		Model: &model.Model{
 			ID: id,
