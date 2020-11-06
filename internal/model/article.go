@@ -75,6 +75,17 @@ func (a Article) ListByTagID(db *gorm.DB, tagID uint32, pageOffset, pageSize int
 	if pageOffset >= 0 && pageSize > 0 {
 		db = db.Offset(pageOffset).Limit(pageSize)
 	}
+	/**
+	SELECT
+	ar.id AS article_id, ar.title AS article_title, ar.desc AS article_desc, ar.cover_image_url, ar.content,
+	t.id AS tag_id, t.name AS tag_name
+	FROM blog_article_tag AS at
+	LEFT JOIN `blog_tag` AS t
+	ON at.tag_id = t.id
+	LEFT JOIN `blog_article` AS ar
+	ON at.article_id = ar.id WHERE (at.`tag_id` = 1 AND ar.state = 1 AND ar.is_del = 0)
+	LIMIT 10 OFFSET 0
+	*/
 	rows, err := db.Select(fields).Table(ArticleTag{}.TableName()+" AS at").
 		Joins("LEFT JOIN `"+Tag{}.TableName()+"` AS t ON at.tag_id = t.id").
 		Joins("LEFT JOIN `"+Article{}.TableName()+"` AS ar ON at.article_id = ar.id").

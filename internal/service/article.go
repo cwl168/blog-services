@@ -98,7 +98,7 @@ func (svc *Service) GetArticleList(param *ArticleListRequest, pager *app.Pager) 
 			Desc:          article.ArticleDesc,
 			Content:       article.Content,
 			CoverImageUrl: article.CoverImageUrl,
-			Tag:           &model.Tag{Model: &model.Model{ID: article.TagID}, Name: article.TagName},
+			Tag:           &model.Tag{Model: &model.Model{ID: article.TagID}, Name: article.TagName}, // 只有标签ID和标签名 有值
 		})
 	}
 
@@ -117,7 +117,7 @@ func (svc *Service) CreateArticle(param *CreateArticleRequest) error {
 	if err != nil {
 		return err
 	}
-
+	//文章关联表
 	err = svc.dao.CreateArticleTag(article.ID, param.TagID, param.CreatedBy)
 	if err != nil {
 		return err

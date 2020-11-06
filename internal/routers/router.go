@@ -49,9 +49,10 @@ func NewRouter() *gin.Engine {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.POST("/upload/file", upload.UploadFile)
 	r.POST("/auth", api.GetAuth)
+	//访问图片  http://127.0.0.1:8000/static/c4ca4238a0b923820dcc509a6f75849b.png
 	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
 	apiv1 := r.Group("/api/v1")
-	apiv1.Use() //middleware.JWT()
+	apiv1.Use(middleware.JWT()) //middleware.JWT()
 	{
 		// 创建标签
 		apiv1.POST("/tags", tag.Create)
