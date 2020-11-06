@@ -13,6 +13,7 @@ import (
 	"github.com/go-programming-tour-book/blog-service/global"
 )
 
+//异常捕获处理
 func Recovery() gin.HandlerFunc {
 	defailtMailer := email.NewEmail(&email.SMTPInfo{
 		Host:     global.EmailSetting.Host,
@@ -27,6 +28,7 @@ func Recovery() gin.HandlerFunc {
 			if err := recover(); err != nil {
 				global.Logger.WithCallersFrames().Errorf(c, "panic recover err: %v", err)
 
+				//发送邮件
 				err := defailtMailer.SendMail(
 					global.EmailSetting.To,
 					fmt.Sprintf("异常抛出，发生时间: %d", time.Now().Unix()),
