@@ -53,16 +53,19 @@ type Article struct {
 }
 
 func (svc *Service) GetArticle(param *ArticleRequest) (*Article, error) {
+	//从 blog_article 获取文章
 	article, err := svc.dao.GetArticle(param.ID, param.State)
 	if err != nil {
 		return nil, err
 	}
 
+	//从blog_article_tag关联表 获取指定文章id的 关联关系
 	articleTag, err := svc.dao.GetArticleTagByAID(article.ID)
 	if err != nil {
 		return nil, err
 	}
 
+	//从 blog_tag 获取指定标签id的标签
 	tag, err := svc.dao.GetTag(articleTag.TagID, model.STATE_OPEN)
 	if err != nil {
 		return nil, err

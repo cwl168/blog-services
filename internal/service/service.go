@@ -16,6 +16,7 @@ type Service struct {
 
 func New(ctx context.Context) Service {
 	svc := Service{ctx: ctx}
-	svc.dao = dao.New(otgorm.WithContext(svc.ctx, global.DBEngine))
+	//svc.dao = dao.New(global.DBEngine)
+	svc.dao = dao.New(otgorm.WithContext(svc.ctx, global.DBEngine)) //每一次请求都需要将上下文注册进来,otgorm.WithContext(svc.ctx, global.DBEngine)这么写，为了实现sql追踪
 	return svc
 }

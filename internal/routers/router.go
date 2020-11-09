@@ -19,8 +19,8 @@ import (
 
 var methodLimiters = limiter.NewMethodLimiter().AddBuckets(
 	limiter.LimiterBucketRule{
-		Key:          "/auth",
-		FillInterval: time.Second,
+		Key:          "/auth", //auth 接口限流一分钟  10次请求
+		FillInterval: time.Minute,
 		Capacity:     10,
 		Quantum:      10,
 	},
@@ -28,7 +28,7 @@ var methodLimiters = limiter.NewMethodLimiter().AddBuckets(
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
-	if global.ServerSetting.RunMode != "debug" {
+	if global.ServerSetting.RunMode == "debug" {
 		r.Use(gin.Logger())
 		r.Use(gin.Recovery()) //gin 异常捕获处理中间件
 	} else {
@@ -37,10 +37,10 @@ func NewRouter() *gin.Engine {
 	}
 
 	//注册中间件
-	r.Use(middleware.Tracing())
-	r.Use(middleware.RateLimiter(methodLimiters))
-	r.Use(middleware.ContextTimeout(global.AppSetting.DefaultContextTimeout))
-	r.Use(middleware.Translations()) //国际化处理
+	r.Use(middleware.Tracing())                                               //链路追踪
+	r.Use(middleware.RateLimiter(methodLimiters))                             //接口限流
+	r.Use(middleware.ContextTimeout(global.AppSetting.DefaultContextTimeout)) //超时控制
+	r.Use(middleware.Translations())                                          //国际化处理
 
 	article := v1.NewArticle()
 	tag := v1.NewTag()

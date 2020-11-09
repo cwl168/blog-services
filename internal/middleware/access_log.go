@@ -36,6 +36,7 @@ func AccessLog() gin.HandlerFunc {
 		}
 		s := "access log: method: %s, status_code: %d, " +
 			"begin_time: %d, end_time: %d"
+		//Infof方法参数 ctx context.Context 中 ctx为context.Context类型，而c为*gin.Context，为啥能传？
 		global.Logger.WithFields(fields).Infof(c, s,
 			c.Request.Method,
 			bodyWriter.Status(),
