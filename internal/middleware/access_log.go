@@ -22,7 +22,9 @@ type AccessLogWriter struct {
 }
 
 //AccessLogWriter 实现了   ResponseWriter
+//覆盖了gin.responseWriter的Write方法
 func (w AccessLogWriter) Write(p []byte) (int, error) {
+	//先写到 buffer,再调用gin.ResponseWriter.Write方法
 	if n, err := w.body.Write(p); err != nil {
 		return n, err
 	}
@@ -44,7 +46,7 @@ func AccessLog() gin.HandlerFunc {
 		}
 		s := "access log: method: %s, status_code: %d, " +
 			"begin_time: %d, end_time: %d"
-		//Infof方法参数 ctx context.Context 中 ctx为context.Context类型，而c为*gin.Context，为啥能传？
+		//Infof方法参数 ctx context.Context 中 ctx为context.Context类型，而c为*gin.Context，为啥能传？  实际上context.Context 是一个接口，而gin.Context也对应实现接口里面方法，在go中，认为事相等的
 		global.Logger.WithFields(fields).Infof(c, s,
 			c.Request.Method,
 			bodyWriter.Status(),
