@@ -9,11 +9,19 @@ import (
 	"github.com/go-programming-tour-book/blog-service/pkg/logger"
 )
 
+/**
+type ResponseWriter interface {
+	Header() Header
+	Write([]byte) (int, error)
+	WriteHeader(statusCode int)
+}
+*/
 type AccessLogWriter struct {
 	gin.ResponseWriter
 	body *bytes.Buffer
 }
 
+//AccessLogWriter 实现了   ResponseWriter
 func (w AccessLogWriter) Write(p []byte) (int, error) {
 	if n, err := w.body.Write(p); err != nil {
 		return n, err
@@ -31,7 +39,7 @@ func AccessLog() gin.HandlerFunc {
 		endTime := time.Now().Unix()
 
 		fields := logger.Fields{
-			"request":  c.Request.PostForm.Encode(),
+			"request":  c.Request.Form,
 			"response": bodyWriter.body.String(),
 		}
 		s := "access log: method: %s, status_code: %d, " +
