@@ -8,7 +8,9 @@ import (
 type Setting struct {
 	vp *viper.Viper
 }
+
 // 读取config.yaml 配置文件
+//通过标准库flag读取命令行参数，然后根 据其默认值判断配置文件是否存在。若存在，则对读取配置的路径进行 变更
 func NewSetting(configs ...string) (*Setting, error) {
 	vp := viper.New()
 	vp.SetConfigName("config")

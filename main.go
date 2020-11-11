@@ -94,6 +94,7 @@ func main() {
 	log.Println("Server exiting")
 }
 
+//go run ../main.go -config=../configs -port=8001 -mode=release
 func setupFlag() error {
 	flag.StringVar(&port, "port", "", "启动端口")
 	flag.StringVar(&runMode, "mode", "", "启动模式")
@@ -134,6 +135,7 @@ func setupSetting() error {
 	global.JWTSetting.Expire *= time.Second
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
+	//	对ServerSetting配置项进行覆写。如果存在，则覆盖原有 的文件配置，使其优先级更高
 	if port != "" {
 		global.ServerSetting.HttpPort = port
 	}

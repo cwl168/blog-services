@@ -16,6 +16,7 @@ require (
 	github.com/go-playground/validator/v10 v10.2.0
 	github.com/golang/protobuf v1.4.0 // indirect
 	github.com/jinzhu/gorm v1.9.12
+	github.com/jteeuwen/go-bindata v3.0.7+incompatible // indirect
 	github.com/juju/ratelimit v1.0.1
 	github.com/kr/pty v1.1.5 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect

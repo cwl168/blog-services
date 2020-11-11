@@ -1,6 +1,8 @@
 package routers
 
 import (
+	"github.com/go-programming-tour-book/blog-service/configs"
+	"github.com/go-programming-tour-book/blog-service/pkg/app"
 	"net/http"
 	"time"
 
@@ -49,6 +51,9 @@ func NewRouter() *gin.Engine {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.POST("/upload/file", upload.UploadFile)
 	r.POST("/auth", api.GetAuth)
+
+	//测试读取配置文件
+	r.GET("/config", bindataStaticHandler)
 	//访问图片  http://127.0.0.1:8000/static/c4ca4238a0b923820dcc509a6f75849b.png
 	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
 	apiv1 := r.Group("/api/v1")
@@ -76,4 +81,14 @@ func NewRouter() *gin.Engine {
 	}
 
 	return r
+}
+func bindataStaticHandler(c *gin.Context) {
+	response := app.NewResponse(c)
+	data, err := configs.Asset("configs/config.yaml")
+	if err != nil {
+		global.Logger.Errorf(c, "app.GetConfig errs: %v", err)
+	}
+	response.ToResponse(gin.H{
+		"data": data,
+	})
 }
