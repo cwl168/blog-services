@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "expvar"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -30,6 +31,11 @@ var (
 	runMode   string
 	config    string
 	isVersion bool
+
+	//编译信息
+	buildTime    string
+	buildVersion string
+	gitCommitID  string
 )
 
 func init() {
@@ -64,6 +70,16 @@ func init() {
 // @description Go 语言编程之旅：一起用 Go 做项目
 // @termsOfService https://github.com/go-programming-tour-book
 func main() {
+	//编译信息的写入
+	// go build -ldflags "-X main.buildTime=`date +%Y-%m-%d，%H:%M:%S` -X main.buildVersion=1.0.0 -X main.gitCommitID=`git rev-parse HEAD`"
+	// ./blog-service -version
+	if isVersion {
+		fmt.Printf("build_time:%s\n", buildTime)
+		fmt.Printf("build_version:%s\n", buildVersion)
+		fmt.Printf("git_commit_id:%s\n", gitCommitID)
+
+		return
+	}
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
 	s := &http.Server{
@@ -80,11 +96,14 @@ func main() {
 		}
 	}()
 
+	//等待中断信号
 	quit := make(chan os.Signal)
+	//接收syscall.SIGINT 和 syscall.SIGTERM 信号
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.Println("Shuting down server...")
 
+	//最大时间控制，通知该服务端它有5s的时间来处理原有的请求
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := s.Shutdown(ctx); err != nil {

@@ -7,6 +7,7 @@ import (
 	"github.com/go-programming-tour-book/blog-service/pkg/app"
 	"github.com/go-programming-tour-book/blog-service/pkg/convert"
 	"github.com/go-programming-tour-book/blog-service/pkg/errcode"
+	"time"
 )
 
 type Article struct{}
@@ -56,6 +57,7 @@ func (a Article) Get(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles [get]
 func (a Article) List(c *gin.Context) {
+	time.Sleep(3 * time.Second) //模拟优雅重启  终端按组合键 ctrl+c 后，其向该应用发送了一个 SIGINT 信号，并且被应用成功捕获到，此时该应用开始停止对外接收新的请求，在原有的请求执行完毕后（可通过输出的 SQL 日志观察到），最终退出旧进程。
 	param := service.ArticleListRequest{}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
