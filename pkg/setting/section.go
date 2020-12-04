@@ -68,7 +68,9 @@ func (s *Setting) ReadSection(k string, v interface{}) error {
 		sections[k] = v
 	}
 	for key, value := range sections {
-		log.Printf("%s=>%v]\n", key, value)
+		if v, ok := value.(AppSettingS); ok {
+			log.Printf("%s=>%v]\n", key, v)
+		}
 	}
 	os.Exit(0)
 	return nil
