@@ -1,6 +1,8 @@
 package setting
 
 import (
+	"log"
+	"os"
 	"time"
 )
 
@@ -56,14 +58,19 @@ type DatabaseSettingS struct {
 var sections = make(map[string]interface{})
 
 func (s *Setting) ReadSection(k string, v interface{}) error {
+	//反序列化  将配置绑定到某个结构体、map上
 	err := s.vp.UnmarshalKey(k, v)
 	if err != nil {
 		return err
 	}
-
+	//加入到sections中 以便热更新
 	if _, ok := sections[k]; !ok {
 		sections[k] = v
 	}
+	for key, value := range sections {
+		log.Printf("%s=>%v]\n", key, value)
+	}
+	os.Exit(0)
 	return nil
 }
 
@@ -74,6 +81,5 @@ func (s *Setting) ReloadAllSection() error {
 			return err
 		}
 	}
-
 	return nil
 }

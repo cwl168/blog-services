@@ -80,6 +80,9 @@ func main() {
 
 		return
 	}
+	//配置热更新测试
+	log.Printf("Main ReadTimeout:[%v],[%T]\n", global.ServerSetting.ReadTimeout, global.ServerSetting.ReadTimeout)
+
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
 	s := &http.Server{
@@ -125,6 +128,7 @@ func setupFlag() error {
 }
 
 func setupSetting() error {
+	log.Println("init setupSetting\n")
 	s, err := setting.NewSetting(strings.Split(config, ",")...)
 	if err != nil {
 		return err
@@ -150,10 +154,11 @@ func setupSetting() error {
 		return err
 	}
 
-	global.AppSetting.DefaultContextTimeout *= time.Second
+	//将秒转化为纳秒  time.Duration
+	/*global.AppSetting.DefaultContextTimeout *= time.Second
 	global.JWTSetting.Expire *= time.Second
 	global.ServerSetting.ReadTimeout *= time.Second
-	global.ServerSetting.WriteTimeout *= time.Second
+	global.ServerSetting.WriteTimeout *= time.Second*/
 	//	对ServerSetting配置项进行覆写。如果存在，则覆盖原有 的文件配置，使其优先级更高
 	if port != "" {
 		global.ServerSetting.HttpPort = port
