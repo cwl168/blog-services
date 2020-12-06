@@ -29,7 +29,7 @@ Email:
 JWT:
   Secret: eddycjy
   Issuer: blog-service
-  Expire: 1m30s
+  Expire: 2h
 Database:
   DBType: mysql
   UserName: root

@@ -50,7 +50,7 @@ func NewRouter() *gin.Engine {
 	r.GET("/debug/vars", api.Expvar)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.POST("/upload/file", upload.UploadFile)
-	r.POST("/auth", api.GetAuth)
+	r.Any("/auth", api.GetAuth)
 
 	//测试读取配置文件
 	r.GET("/config", bindataStaticHandler)

@@ -2,7 +2,6 @@ package setting
 
 import (
 	"log"
-	"os"
 	"time"
 )
 
@@ -63,16 +62,28 @@ func (s *Setting) ReadSection(k string, v interface{}) error {
 	if err != nil {
 		return err
 	}
-	//加入到sections中 以便热更新
+	//加入到sections中 以便热更新 k不存在map中则加入map中
 	if _, ok := sections[k]; !ok {
 		sections[k] = v
 	}
+	//类型断言
 	for key, value := range sections {
-		if v, ok := value.(AppSettingS); ok {
-			log.Printf("%s=>%v]\n", key, v)
+		switch val := value.(type) {
+		case **ServerSettingS:
+			log.Printf("ServerSettingS:[%v],key:[%s]\n", *val, key)
+		case **AppSettingS:
+			log.Printf("AppSettingS:[%v],key:[%s]\n", *val, key)
+		case **EmailSettingS:
+			log.Printf("EmailSettingS:[%v],key:[%s]\n", *val, key)
+		case **JWTSettingS:
+			log.Printf("JWTSettingS:[%v],key:[%s]\n", *val, key)
+		case **DatabaseSettingS:
+			log.Printf("DatabaseSettingS:[%v],key:[%s]\n", *val, key)
+		default:
+			log.Println("no value\n")
 		}
 	}
-	os.Exit(0)
+
 	return nil
 }
 
