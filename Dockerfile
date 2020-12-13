@@ -1,7 +1,6 @@
-FROM golang:alpine
-RUN apk add build-base
+FROM golang:alpine AS builder
+
 # 为我们的镜像设置必要的环境变量
-#支持平台 ，那么我们就要进行交叉编译，而交叉编译不支持 cgo，因此这里要禁用掉它  关闭 cgo 后，在构建过程中会忽略 cgo 并静态链接所有的依赖库，而开启 cgo 后，方式将转为动态链接
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
     GOOS=linux \
@@ -9,24 +8,29 @@ ENV GO111MODULE=on \
 
 # 移动到工作目录：/build
 WORKDIR /build
+RUN go env -w GO111MODULE=on
+RUN go env -w GOPROXY=https://goproxy.cn,https://mirrors.aliyun.com/goproxy/,direct
+# 复制项目中的 go.mod 和 go.sum文件并下载依赖信息
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
 
 # 将代码复制到容器中
 COPY . .
-RUN go env -w GO111MODULE=on
-RUN go env -w GOPROXY=https://goproxy.cn,direct
 
-# 将我们的代码编译成二进制可执行文件blog-service
+
+# 将我们的代码编译成二进制可执行文件 blog-service
 RUN go build -o blog-service .
 
-# 移动到用于存放生成的二进制文件的 /dist 目录
-WORKDIR /dist
+###################
+# 接下来创建一个小镜像
+###################
+FROM scratch
 
-# 将二进制文件从 /build 目录复制到这里 -r 目录拷贝
-RUN cp -r /build/configs /dist
-RUN cp /build/blog-service .
+COPY ./configs /configs
 
-# 声明服务端口
-EXPOSE 8888
+# 从builder镜像中把/dist/app 拷贝到当前目录
+COPY --from=builder /build/blog-service /
 
-# 启动容器时运行的命令
-CMD ["/dist/blog-service"]
+# 需要运行的命令 docker run --name blog -it -p 8888:8888 blog-service
+ENTRYPOINT ["/blog-service"]
