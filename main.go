@@ -128,7 +128,6 @@ func setupFlag() error {
 }
 
 func setupSetting() error {
-	log.Println("init setupSetting\n")
 	s, err := setting.NewSetting(strings.Split(config, ",")...)
 	if err != nil {
 		return err

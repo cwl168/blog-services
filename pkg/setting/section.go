@@ -1,7 +1,6 @@
 package setting
 
 import (
-	"log"
 	"time"
 )
 
@@ -67,7 +66,7 @@ func (s *Setting) ReadSection(k string, v interface{}) error {
 		sections[k] = v
 	}
 	//类型断言
-	for key, value := range sections {
+	/*for key, value := range sections {
 		switch val := value.(type) {
 		case **ServerSettingS:
 			log.Printf("ServerSettingS:[%v],key:[%s]\n", *val, key)
@@ -82,7 +81,7 @@ func (s *Setting) ReadSection(k string, v interface{}) error {
 		default:
 			log.Println("no value\n")
 		}
-	}
+	}*/
 
 	return nil
 }

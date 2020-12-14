@@ -1,7 +1,20 @@
 # yaml 配置  mysql 跟  blog-service服务
 version: "3.7"
 services:
+  blog:
+    restart: always
+    container_name: blog
+    build: .
+    command: sh -c "./wait-for-it.sh mysql:3306 -- ./blog-service"
+    depends_on:
+      - mysql
+    ports:
+      - "8889:8000"
+    expose:
+      - "8889"
+    privileged: true
   mysql:
+    container_name: mysql
     image: "mysql:5.7.22"
     ports:
       - "33061:3306"
@@ -11,7 +24,6 @@ services:
       MYSQL_DATABASE: "blog_service"
       MYSQL_PASSWORD: "root"
       MYSQL_ROOT_HOST: '%'
-    container_name: mysql
     volumes:
       - ./docs/mysql:/var/lib/mysql
       - ./docs/sql/blog_service.sql:/docker-entrypoint-initdb.d/blog.sql
@@ -19,35 +31,3 @@ services:
       '--character-set-server=utf8mb4',
       '--collation-server=utf8mb4_unicode_ci'
     ]
-    networks:
-      - blog-net
-  blog:
-    container_name: blog
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - "./wait-for-it.sh:/wait-for-it.sh"
-    depends_on:
-      - mysql
-    command: >
-      /bin/bash -c '
-      while ! nc -z database 3306;
-      do
-       echo "wait for database";
-       sleep 1;
-      done;
-
-      echo "database is ready!";
-      echo "start web service here";
-      '
-    ports:
-      - "8889:8888"
-    expose:
-      - 8889
-    privileged: true
-    networks:
-      - blog-net
-networks:
-  blog-net:
-    driver: "bridge"

@@ -25,12 +25,25 @@ RUN go build -o blog-service .
 ###################
 # 接下来创建一个小镜像
 ###################
-FROM scratch
+#FROM scratch
+#apt-get需要
+FROM debian:stretch-slim
 
 COPY ./configs /configs
+COPY ./wait-for-it.sh /
+COPY ./init.sh /
 
 # 从builder镜像中把/dist/app 拷贝到当前目录
 COPY --from=builder /build/blog-service /
 
-# 需要运行的命令 docker run --name blog -it -p 8888:8888 blog-service
-ENTRYPOINT ["/blog-service"]
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y \
+		--no-install-recommends \
+		netcat; \
+        chmod 755 wait-for-it.sh
+
+RUN chmod +x /init.sh
+
+# 需要运行的命令 docker run --name blog -it -p 8888:8888 blog-service ，用到 wait-for-it 容器启动顺序，需要将/blog-service运行注释
+#ENTRYPOINT ["/init.sh"]
