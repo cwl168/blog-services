@@ -82,6 +82,7 @@ func NewRouter() *gin.Engine {
 
 	return r
 }
+//go-bindata  打包配置文件，读取出来为 base64 格式
 func bindataStaticHandler(c *gin.Context) {
 	response := app.NewResponse(c)
 	data, err := configs.Asset("configs/config.yaml")
@@ -89,6 +90,6 @@ func bindataStaticHandler(c *gin.Context) {
 		global.Logger.Errorf(c, "app.GetConfig errs: %v", err)
 	}
 	response.ToResponse(gin.H{
-		"data": data,
+		"data": string(data),
 	})
 }

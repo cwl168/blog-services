@@ -43,6 +43,7 @@ func init() {
 	if err != nil {
 		log.Fatalf("init.setupFlag err: %v", err)
 	}
+	//读取配置文件config.yaml
 	err = setupSetting()
 	if err != nil {
 		log.Fatalf("init.setupSetting err: %v", err)
@@ -128,6 +129,7 @@ func setupFlag() error {
 }
 
 func setupSetting() error {
+	fmt.Println(strings.Split(config, ","))
 	s, err := setting.NewSetting(strings.Split(config, ",")...)
 	if err != nil {
 		return err
