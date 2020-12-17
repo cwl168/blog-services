@@ -7,7 +7,6 @@ import (
 	"github.com/go-programming-tour-book/blog-service/pkg/app"
 	"github.com/go-programming-tour-book/blog-service/pkg/convert"
 	"github.com/go-programming-tour-book/blog-service/pkg/errcode"
-	"time"
 )
 
 type Tag struct{}
@@ -28,7 +27,7 @@ func NewTag() Tag {
 // @Router /api/v1/tags [get]
 func (t Tag) List(c *gin.Context) {
 	//一元调用做 超时控制和重试 测试
-	time.Sleep(time.Hour)
+	//time.Sleep(time.Hour)
 
 	param := service.TagListRequest{}
 	response := app.NewResponse(c)
