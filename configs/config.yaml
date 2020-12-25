@@ -4,7 +4,7 @@ Server:
   ReadTimeout: 14s
   WriteTimeout: 6s
 App:
-  DefaultPageSize: 10
+  DefaultPageSize: 2
   MaxPageSize: 100
   DefaultContextTimeout: 6s
   LogSavePath: storage/logs
