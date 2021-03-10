@@ -95,6 +95,7 @@ func (svc *Service) GetArticleList(param *ArticleListRequest, pager *app.Pager) 
 
 	var articleList []*Article
 	for _, article := range articles {
+		//总共7个字段
 		articleList = append(articleList, &Article{
 			ID:            article.ArticleID,
 			Title:         article.ArticleTitle,
