@@ -46,6 +46,7 @@ func NewRouter() *gin.Engine {
 
 	article := v1.NewArticle()
 	tag := v1.NewTag()
+	act := v1.NewAct()
 	upload := api.NewUpload()
 	r.GET("/debug/vars", api.Expvar)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -78,10 +79,15 @@ func NewRouter() *gin.Engine {
 		apiv1.GET("/articles/:id", article.Get)
 		// 获取文章列表
 		apiv1.GET("/articles", article.List)
+
+		//活动相关接口
+		apiv1.GET("/task_list", act.TaskList) //任务列表
+
 	}
 
 	return r
 }
+
 //go-bindata  打包配置文件，读取出来为 base64 格式
 func bindataStaticHandler(c *gin.Context) {
 	response := app.NewResponse(c)
