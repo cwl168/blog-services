@@ -58,7 +58,7 @@ func NewRouter() *gin.Engine {
 	//访问图片  http://127.0.0.1:8000/static/c4ca4238a0b923820dcc509a6f75849b.png
 	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
 	apiv1 := r.Group("/api/v1")
-	apiv1.Use(middleware.JWT()) //middleware.JWT()
+	apiv1.Use() //middleware.JWT()
 	{
 		// 创建标签
 		apiv1.POST("/tags", tag.Create)
@@ -82,6 +82,7 @@ func NewRouter() *gin.Engine {
 
 		//活动相关接口
 		apiv1.GET("/task_list", act.TaskList) //任务列表
+		apiv1.GET("/receive_list", act.ReceiveList)
 
 	}
 

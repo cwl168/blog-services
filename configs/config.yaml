@@ -1,7 +1,7 @@
 Server:
   RunMode: debug
   HttpPort: 8000
-  ReadTimeout: 14s
+  ReadTimeout: 15s
   WriteTimeout: 6s
 App:
   DefaultPageSize: 2

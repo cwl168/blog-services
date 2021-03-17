@@ -155,7 +155,7 @@ func setupSetting() error {
 		return err
 	}
 
-	//将秒转化为纳秒  time.Duration
+	//将秒转化为纳秒  time.Duration   配置成 14s格式就不需要转化，如果是 10这样的格式就需要转化
 	/*global.AppSetting.DefaultContextTimeout *= time.Second
 	global.JWTSetting.Expire *= time.Second
 	global.ServerSetting.ReadTimeout *= time.Second

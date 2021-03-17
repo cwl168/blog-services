@@ -33,7 +33,7 @@ func (a Article) Get(c *gin.Context) {
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
 		return
 	}
-
+	//初始化 上下文和db
 	svc := service.New(c.Request.Context())
 	article, err := svc.GetArticle(&param)
 	if err != nil {

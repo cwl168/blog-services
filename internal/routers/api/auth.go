@@ -19,7 +19,8 @@ func GetAuth(c *gin.Context) {
 	}
 
 	svc := service.New(c.Request.Context())
-	err := svc.CheckAuth(&param)
+	//db查询用户信息
+	user, err := svc.CheckAuth(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.CheckAuth err: %v", err)
 		response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
@@ -35,5 +36,6 @@ func GetAuth(c *gin.Context) {
 
 	response.ToResponse(gin.H{
 		"token": token,
+		"uid":   user.ID,
 	})
 }

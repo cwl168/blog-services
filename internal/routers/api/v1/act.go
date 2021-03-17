@@ -10,3 +10,6 @@ func NewAct() Act {
 func (act Act) TaskList(c *gin.Context) {
 
 }
+func (act Act) ReceiveList(c *gin.Context) {
+
+}

@@ -17,6 +17,8 @@ type Pager struct {
 	// 每页数量
 	PageSize int `json:"page_size"`
 	// 总行数
+	TotalPage int `json:"total_page"`
+	// 总行数
 	TotalRows int `json:"total_rows"`
 }
 
@@ -39,6 +41,7 @@ func (r *Response) ToResponseList(list interface{}, totalRows int) {
 		"pager": Pager{
 			Page:      GetPage(r.Ctx),
 			PageSize:  GetPageSize(r.Ctx),
+			TotalPage: GetTotalPage(r.Ctx, totalRows),
 			TotalRows: totalRows,
 		},
 	})

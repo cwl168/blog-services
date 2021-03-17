@@ -42,6 +42,7 @@ type DeleteArticleRequest struct {
 	ID uint32 `form:"id" binding:"required,gte=1"`
 }
 
+//返回数据结构
 type Article struct {
 	ID            uint32     `json:"id"`
 	Title         string     `json:"title"`
