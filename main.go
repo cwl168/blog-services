@@ -13,12 +13,13 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/go-programming-tour-book/blog-service/internal/model"
+
 	"github.com/go-programming-tour-book/blog-service/pkg/tracer"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-programming-tour-book/blog-service/global"
-	"github.com/go-programming-tour-book/blog-service/internal/model"
 	"github.com/go-programming-tour-book/blog-service/internal/routers"
 	"github.com/go-programming-tour-book/blog-service/pkg/logger"
 	"github.com/go-programming-tour-book/blog-service/pkg/setting"

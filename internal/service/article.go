@@ -3,57 +3,12 @@ package service
 import (
 	"github.com/go-programming-tour-book/blog-service/internal/dao"
 	"github.com/go-programming-tour-book/blog-service/internal/model"
-	"github.com/go-programming-tour-book/blog-service/pkg/app"
+	"github.com/go-programming-tour-book/blog-service/internal/model/request"
+	"github.com/go-programming-tour-book/blog-service/internal/model/response"
 )
 
-//针对入参校验增加 绑定和验证结构体。
-type ArticleRequest struct {
-	ID    uint32 `form:"id" binding:"required,gte=1"`
-	State uint8  `form:"state,default=1" binding:"oneof=0 1"`
-}
-
-type ArticleListRequest struct {
-	TagID uint32 `form:"tag_id" binding:"gte=1"`
-	State uint8  `form:"state,default=1" binding:"oneof=0 1"`
-}
-
-type CreateArticleRequest struct {
-	TagID         uint32 `form:"tag_id" binding:"required,gte=1"`
-	Title         string `form:"title" binding:"required,min=2,max=100"`
-	Desc          string `form:"desc" binding:"required,min=2,max=255"`
-	Content       string `form:"content" binding:"required,min=2,max=4294967295"`
-	CoverImageUrl string `form:"cover_image_url" binding:"required,url"`
-	CreatedBy     string `form:"created_by" binding:"required,min=2,max=100"`
-	State         uint8  `form:"state,default=1" binding:"oneof=0 1"`
-}
-
-type UpdateArticleRequest struct {
-	ID            uint32 `form:"id" binding:"required,gte=1"`
-	TagID         uint32 `form:"tag_id" binding:"required,gte=1"`
-	Title         string `form:"title" binding:"min=2,max=100"`
-	Desc          string `form:"desc" binding:"min=2,max=255"`
-	Content       string `form:"content" binding:"min=2,max=4294967295"`
-	CoverImageUrl string `form:"cover_image_url" binding:"url"`
-	ModifiedBy    string `form:"modified_by" binding:"required,min=2,max=100"`
-	State         uint8  `form:"state,default=1" binding:"oneof=0 1"`
-}
-
-type DeleteArticleRequest struct {
-	ID uint32 `form:"id" binding:"required,gte=1"`
-}
-
-//返回数据结构
-type Article struct {
-	ID            uint32     `json:"id"`
-	Title         string     `json:"title"`
-	Desc          string     `json:"desc"`
-	Content       string     `json:"content"`
-	CoverImageUrl string     `json:"cover_image_url"`
-	State         uint8      `json:"state"`
-	Tag           *model.Tag `json:"tag"`
-}
-
-func (svc *Service) GetArticle(param *ArticleRequest) (*Article, error) {
+//单个文章
+func (svc *Service) GetArticle(param *request.ArticleRequest) (*response.Article, error) {
 	//从 blog_article 获取文章
 	article, err := svc.dao.GetArticle(param.ID, param.State)
 	if err != nil {
@@ -72,7 +27,7 @@ func (svc *Service) GetArticle(param *ArticleRequest) (*Article, error) {
 		return nil, err
 	}
 
-	return &Article{
+	return &response.Article{
 		ID:            article.ID,
 		Title:         article.Title,
 		Desc:          article.Desc,
@@ -83,21 +38,22 @@ func (svc *Service) GetArticle(param *ArticleRequest) (*Article, error) {
 	}, nil
 }
 
-func (svc *Service) GetArticleList(param *ArticleListRequest, pager *app.Pager) ([]*Article, int, error) {
+//文章列表
+func (svc *Service) GetArticleList(param *request.ArticleListRequest) ([]*response.Article, int, error) {
 	articleCount, err := svc.dao.CountArticleListByTagID(param.TagID, param.State)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	articles, err := svc.dao.GetArticleListByTagID(param.TagID, param.State, pager.Page, pager.PageSize)
+	articles, err := svc.dao.GetArticleListByTagID(param.TagID, param.State, param.Page, param.PageSize)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	var articleList []*Article
+	var articleList []*response.Article
 	for _, article := range articles {
 		//总共7个字段
-		articleList = append(articleList, &Article{
+		articleList = append(articleList, &response.Article{
 			ID:            article.ArticleID,
 			Title:         article.ArticleTitle,
 			Desc:          article.ArticleDesc,
@@ -110,7 +66,7 @@ func (svc *Service) GetArticleList(param *ArticleListRequest, pager *app.Pager) 
 	return articleList, articleCount, nil
 }
 
-func (svc *Service) CreateArticle(param *CreateArticleRequest) error {
+func (svc *Service) CreateArticle(param *request.CreateArticleRequest) error {
 	article, err := svc.dao.CreateArticle(&dao.Article{
 		Title:         param.Title,
 		Desc:          param.Desc,
@@ -122,7 +78,7 @@ func (svc *Service) CreateArticle(param *CreateArticleRequest) error {
 	if err != nil {
 		return err
 	}
-	//文章关联表
+	//文章关联表 blog_article_tag
 	err = svc.dao.CreateArticleTag(article.ID, param.TagID, param.CreatedBy)
 	if err != nil {
 		return err
@@ -131,7 +87,7 @@ func (svc *Service) CreateArticle(param *CreateArticleRequest) error {
 	return nil
 }
 
-func (svc *Service) UpdateArticle(param *UpdateArticleRequest) error {
+func (svc *Service) UpdateArticle(param *request.UpdateArticleRequest) error {
 	err := svc.dao.UpdateArticle(&dao.Article{
 		ID:            param.ID,
 		Title:         param.Title,
@@ -153,7 +109,7 @@ func (svc *Service) UpdateArticle(param *UpdateArticleRequest) error {
 	return nil
 }
 
-func (svc *Service) DeleteArticle(param *DeleteArticleRequest) error {
+func (svc *Service) DeleteArticle(param *request.DeleteArticleRequest) error {
 	err := svc.dao.DeleteArticle(param.ID)
 	if err != nil {
 		return err

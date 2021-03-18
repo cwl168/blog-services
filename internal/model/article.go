@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/go-programming-tour-book/blog-service/pkg/app"
+	"github.com/go-programming-tour-book/blog-service/internal/model/common"
 	"github.com/jinzhu/gorm"
 )
 
@@ -16,7 +16,7 @@ type Article struct {
 
 type ArticleSwagger struct {
 	List  []*Article
-	Pager *app.Pager
+	Pager *common.Pager
 }
 
 func (a Article) TableName() string {
@@ -58,6 +58,7 @@ func (a Article) Delete(db *gorm.DB) error {
 	return nil
 }
 
+//用于数据库查询字段struct
 type ArticleRow struct {
 	ArticleID     uint32
 	TagID         uint32

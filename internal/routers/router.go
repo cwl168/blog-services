@@ -1,10 +1,11 @@
 package routers
 
 import (
-	"github.com/go-programming-tour-book/blog-service/configs"
-	"github.com/go-programming-tour-book/blog-service/pkg/app"
 	"net/http"
 	"time"
+
+	"github.com/go-programming-tour-book/blog-service/configs"
+	"github.com/go-programming-tour-book/blog-service/pkg/app"
 
 	"github.com/go-programming-tour-book/blog-service/pkg/limiter"
 
@@ -14,7 +15,7 @@ import (
 	_ "github.com/go-programming-tour-book/blog-service/docs"
 	"github.com/go-programming-tour-book/blog-service/internal/middleware"
 	"github.com/go-programming-tour-book/blog-service/internal/routers/api"
-	"github.com/go-programming-tour-book/blog-service/internal/routers/api/v1"
+	v1 "github.com/go-programming-tour-book/blog-service/internal/routers/api/v1"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
@@ -49,6 +50,7 @@ func NewRouter() *gin.Engine {
 	act := v1.NewAct()
 	upload := api.NewUpload()
 	r.GET("/debug/vars", api.Expvar)
+	//访问swagger 接口文档 http://127.0.0.1:8000/swagger/index.html
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.POST("/upload/file", upload.UploadFile)
 	r.Any("/auth", api.GetAuth)

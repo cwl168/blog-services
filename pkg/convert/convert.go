@@ -8,9 +8,22 @@ func (s StrTo) String() string {
 	return string(s)
 }
 
+//转化为整形
 func (s StrTo) Int() (int, error) {
 	v, err := strconv.Atoi(s.String())
 	return v, err
+}
+
+//转化为uint8类型
+func (s StrTo) UInt8() (uint8, error) {
+	v, err := strconv.Atoi(s.String())
+	return uint8(v), err
+}
+
+//转化为uint32类型
+func (s StrTo) UInt32() (uint32, error) {
+	v, err := strconv.Atoi(s.String()) //转化为int类型
+	return uint32(v), err
 }
 
 func (s StrTo) MustInt() int {
@@ -18,12 +31,11 @@ func (s StrTo) MustInt() int {
 	return v
 }
 
-func (s StrTo) UInt32() (uint32, error) {
-	v, err := strconv.Atoi(s.String())
-	return uint32(v), err
-}
-
 func (s StrTo) MustUInt32() uint32 {
 	v, _ := s.UInt32()
+	return v
+}
+func (s StrTo) MustUInt8() uint8 {
+	v, _ := s.UInt8()
 	return v
 }

@@ -539,7 +539,7 @@
         }
     },
     "definitions": {
-        "app.Pager": {
+        "common.Pager": {
             "type": "object",
             "properties": {
                 "page": {
@@ -548,6 +548,10 @@
                 },
                 "page_size": {
                     "description": "每页数量",
+                    "type": "integer"
+                },
+                "total_page": {
+                    "description": "总行数",
                     "type": "integer"
                 },
                 "total_rows": {
@@ -610,7 +614,7 @@
                     }
                 },
                 "pager": {
-                    "$ref": "#/definitions/app.Pager"
+                    "$ref": "#/definitions/common.Pager"
                 }
             }
         },
@@ -656,7 +660,7 @@
                     }
                 },
                 "pager": {
-                    "$ref": "#/definitions/app.Pager"
+                    "$ref": "#/definitions/common.Pager"
                 }
             }
         }

@@ -12,9 +12,6 @@ import (
 	"github.com/swaggo/swag"
 )
 
-// 1 go get -u github.com/swaggo/swag/cmd/swag  安装 swag
-// 2 swag init 生成
-// 3 http://127.0.0.1:8000/swagger/index.html 访问
 var doc = `{
     "schemes": {{ marshal .Schemes }},
     "swagger": "2.0",
@@ -559,7 +556,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "app.Pager": {
+        "common.Pager": {
             "type": "object",
             "properties": {
                 "page": {
@@ -568,6 +565,10 @@ var doc = `{
                 },
                 "page_size": {
                     "description": "每页数量",
+                    "type": "integer"
+                },
+                "total_page": {
+                    "description": "总行数",
                     "type": "integer"
                 },
                 "total_rows": {
@@ -630,7 +631,7 @@ var doc = `{
                     }
                 },
                 "pager": {
-                    "$ref": "#/definitions/app.Pager"
+                    "$ref": "#/definitions/common.Pager"
                 }
             }
         },
@@ -676,7 +677,7 @@ var doc = `{
                     }
                 },
                 "pager": {
-                    "$ref": "#/definitions/app.Pager"
+                    "$ref": "#/definitions/common.Pager"
                 }
             }
         }

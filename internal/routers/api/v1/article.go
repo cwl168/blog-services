@@ -3,12 +3,13 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-programming-tour-book/blog-service/global"
+	"github.com/go-programming-tour-book/blog-service/internal/model/common"
+	"github.com/go-programming-tour-book/blog-service/internal/model/request"
+	r "github.com/go-programming-tour-book/blog-service/internal/model/response"
 	"github.com/go-programming-tour-book/blog-service/internal/service"
 	"github.com/go-programming-tour-book/blog-service/pkg/app"
 	"github.com/go-programming-tour-book/blog-service/pkg/convert"
 	"github.com/go-programming-tour-book/blog-service/pkg/errcode"
-	"log"
-	"time"
 )
 
 type Article struct{}
@@ -25,7 +26,7 @@ func NewArticle() Article {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles/{id} [get]
 func (a Article) Get(c *gin.Context) {
-	param := service.ArticleRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
+	param := request.ArticleRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
@@ -60,9 +61,13 @@ func (a Article) Get(c *gin.Context) {
 func (a Article) List(c *gin.Context) {
 	//http://127.0.0.1:8000/api/v1/articles?tag_id=1&token=  接口访问
 
-	log.Printf("Article List ReadTimeout:[%v],[%T]\n", global.ServerSetting.ReadTimeout, global.ServerSetting.ReadTimeout)
-	time.Sleep(3 * time.Second) //模拟优雅重启  终端按组合键 ctrl+c 后，其向该应用发送了一个 SIGINT 信号，并且被应用成功捕获到，此时该应用开始停止对外接收新的请求，在原有的请求执行完毕后（可通过输出的 SQL 日志观察到），最终退出旧进程。
-	param := service.ArticleListRequest{}
+	//log.Printf("Article List ReadTimeout:[%v],[%T]\n", global.ServerSetting.ReadTimeout, global.ServerSetting.ReadTimeout)
+	//time.Sleep(3 * time.Second) //模拟优雅重启  终端按组合键 ctrl+c 后，其向该应用发送了一个 SIGINT 信号，并且被应用成功捕获到，此时该应用开始停止对外接收新的请求，在原有的请求执行完毕后（可通过输出的 SQL 日志观察到），最终退出旧进程。
+	param := request.ArticleListRequest{
+		TagID:       convert.StrTo(c.Query("tag_id")).MustUInt32(),
+		State:       convert.StrTo(c.Query("state")).MustUInt8(),
+		PageRequest: common.PageRequest{Page: app.GetPage(c), PageSize: app.GetPageSize(c)},
+	}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
@@ -72,15 +77,22 @@ func (a Article) List(c *gin.Context) {
 	}
 
 	svc := service.New(c.Request.Context())
-	pager := app.Pager{Page: app.GetPage(c), PageSize: app.GetPageSize(c)}
-	articles, totalRows, err := svc.GetArticleList(&param, &pager)
+	articles, totalRows, err := svc.GetArticleList(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.GetArticleList err: %v", err)
 		response.ToErrorResponse(errcode.ErrorGetArticlesFail)
 		return
 	}
 
-	response.ToResponseList(articles, totalRows)
+	response.ToResponse(r.ArticleListResponse{
+		List: articles,
+		Pager: common.Pager{
+			Page:      app.GetPage(c),
+			PageSize:  app.GetPageSize(c),
+			TotalPage: app.GetTotalPage(c, totalRows),
+			TotalRows: totalRows,
+		},
+	})
 	return
 }
 
@@ -98,7 +110,7 @@ func (a Article) List(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles [post]
 func (a Article) Create(c *gin.Context) {
-	param := service.CreateArticleRequest{}
+	param := request.CreateArticleRequest{}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
@@ -132,7 +144,7 @@ func (a Article) Create(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles/{id} [put]
 func (a Article) Update(c *gin.Context) {
-	param := service.UpdateArticleRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
+	param := request.UpdateArticleRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
@@ -161,7 +173,7 @@ func (a Article) Update(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles/{id} [delete]
 func (a Article) Delete(c *gin.Context) {
-	param := service.DeleteArticleRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
+	param := request.DeleteArticleRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {

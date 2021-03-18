@@ -2,6 +2,7 @@ package app
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-programming-tour-book/blog-service/pkg/errcode"
@@ -11,15 +12,19 @@ type Response struct {
 	Ctx *gin.Context
 }
 
-type Pager struct {
-	// 页码
-	Page int `json:"page"`
-	// 每页数量
-	PageSize int `json:"page_size"`
-	// 总行数
-	TotalPage int `json:"total_page"`
-	// 总行数
-	TotalRows int `json:"total_rows"`
+type ResponseResult struct {
+	Code int         `json:"code"`
+	Data interface{} `json:"data"`
+	Msg  string      `json:"msg"`
+}
+
+func Result(code int, data interface{}, msg string, c *gin.Context) {
+	// 开始时间
+	c.JSON(http.StatusOK, ResponseResult{
+		code,
+		data,
+		msg,
+	})
 }
 
 func NewResponse(ctx *gin.Context) *Response {
@@ -28,32 +33,12 @@ func NewResponse(ctx *gin.Context) *Response {
 	}
 }
 
+//成功response
 func (r *Response) ToResponse(data interface{}) {
-	if data == nil {
-		data = gin.H{}
-	}
-	r.Ctx.JSON(http.StatusOK, data)
-}
-
-func (r *Response) ToResponseList(list interface{}, totalRows int) {
-	r.Ctx.JSON(http.StatusOK, gin.H{
-		"list": list,
-		"pager": Pager{
-			Page:      GetPage(r.Ctx),
-			PageSize:  GetPageSize(r.Ctx),
-			TotalPage: GetTotalPage(r.Ctx, totalRows),
-			TotalRows: totalRows,
-		},
-	})
+	Result(http.StatusOK, data, "操作成功", r.Ctx)
 }
 
 //错误response
 func (r *Response) ToErrorResponse(err *errcode.Error) {
-	response := gin.H{"code": err.Code(), "msg": err.Msg()}
-	details := err.Details()
-	if len(details) > 0 {
-		response["details"] = details
-	}
-
-	r.Ctx.JSON(err.StatusCode(), response)
+	Result(err.Code(), nil, strings.Join(err.Details(), ","), r.Ctx)
 }

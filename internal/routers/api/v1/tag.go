@@ -3,6 +3,9 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-programming-tour-book/blog-service/global"
+	"github.com/go-programming-tour-book/blog-service/internal/model/common"
+	"github.com/go-programming-tour-book/blog-service/internal/model/request"
+	r "github.com/go-programming-tour-book/blog-service/internal/model/response"
 	"github.com/go-programming-tour-book/blog-service/internal/service"
 	"github.com/go-programming-tour-book/blog-service/pkg/app"
 	"github.com/go-programming-tour-book/blog-service/pkg/convert"
@@ -29,7 +32,11 @@ func (t Tag) List(c *gin.Context) {
 	//一元调用做 超时控制和重试 测试
 	//time.Sleep(time.Hour)
 
-	param := service.TagListRequest{}
+	param := request.TagListRequest{
+		Name:        convert.StrTo(c.Query("name")).String(),
+		State:       convert.StrTo(c.Query("state")).MustUInt8(),
+		PageRequest: common.PageRequest{Page: app.GetPage(c), PageSize: app.GetPageSize(c)},
+	}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
@@ -39,21 +46,28 @@ func (t Tag) List(c *gin.Context) {
 	}
 
 	svc := service.New(c.Request.Context())
-	pager := app.Pager{Page: app.GetPage(c), PageSize: app.GetPageSize(c)}
-	totalRows, err := svc.CountTag(&service.CountTagRequest{Name: param.Name, State: param.State})
+	totalRows, err := svc.CountTag(&request.CountTagRequest{Name: param.Name, State: param.State})
 	if err != nil {
 		global.Logger.Errorf(c, "svc.CountTag err: %v", err)
 		response.ToErrorResponse(errcode.ErrorCountTagFail)
 		return
 	}
-	tags, err := svc.GetTagList(&param, &pager)
+	tags, err := svc.GetTagList(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.GetTagList err: %v", err)
 		response.ToErrorResponse(errcode.ErrorGetTagListFail)
 		return
 	}
 
-	response.ToResponseList(tags, totalRows)
+	response.ToResponse(r.TagListResponse{
+		List: tags,
+		Pager: common.Pager{
+			Page:      app.GetPage(c),
+			PageSize:  app.GetPageSize(c),
+			TotalPage: app.GetTotalPage(c, totalRows),
+			TotalRows: totalRows,
+		},
+	})
 	return
 }
 
@@ -67,7 +81,7 @@ func (t Tag) List(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags [post]
 func (t Tag) Create(c *gin.Context) {
-	param := service.CreateTagRequest{}
+	param := request.CreateTagRequest{}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
@@ -100,7 +114,7 @@ func (t Tag) Create(c *gin.Context) {
 // @Router /api/v1/tags/{id} [put]
 func (t Tag) Update(c *gin.Context) {
 	//验证请求参数
-	param := service.UpdateTagRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
+	param := request.UpdateTagRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
@@ -129,7 +143,7 @@ func (t Tag) Update(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags/{id} [delete]
 func (t Tag) Delete(c *gin.Context) {
-	param := service.DeleteTagRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
+	param := request.DeleteTagRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
