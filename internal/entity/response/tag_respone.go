@@ -1,7 +1,7 @@
 package response
 
 import (
-	"github.com/go-programming-tour-book/blog-service/internal/model/common"
+	"github.com/go-programming-tour-book/blog-service/internal/entity/common"
 )
 
 type TagListResponse struct {

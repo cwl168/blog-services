@@ -48,6 +48,8 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettingS) (*gorm.DB, error) {
 	db.Callback().Delete().Replace("gorm:delete", deleteCallback)
 	db.DB().SetMaxIdleConns(databaseSetting.MaxIdleConns)
 	db.DB().SetMaxOpenConns(databaseSetting.MaxOpenConns)
+	//db.LogMode(true)
+	//db.SetLogger()
 	otgorm.AddGormCallbacks(db)
 	return db, nil
 }

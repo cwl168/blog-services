@@ -1,8 +1,8 @@
 package service
 
 import (
+	"github.com/go-programming-tour-book/blog-service/internal/entity/request"
 	"github.com/go-programming-tour-book/blog-service/internal/model"
-	"github.com/go-programming-tour-book/blog-service/internal/model/request"
 )
 
 func (svc *Service) CountTag(param *request.CountTagRequest) (int, error) {

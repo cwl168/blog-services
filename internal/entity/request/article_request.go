@@ -1,7 +1,7 @@
 package request
 
 import (
-	"github.com/go-programming-tour-book/blog-service/internal/model/common"
+	"github.com/go-programming-tour-book/blog-service/internal/entity/common"
 )
 
 //针对入参校验增加 绑定和验证结构体。

@@ -1,0 +1,1 @@
+dao：数据访问层（Database Access Object），所有与数据相关的 操作都会在dao层进行，例如 MySQL、Elasticsearch等。类似于 repository

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/go-programming-tour-book/blog-service/internal/model/common"
+	"github.com/go-programming-tour-book/blog-service/internal/entity/common"
 	"github.com/jinzhu/gorm"
 )
 

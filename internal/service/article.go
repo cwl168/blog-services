@@ -2,9 +2,9 @@ package service
 
 import (
 	"github.com/go-programming-tour-book/blog-service/internal/dao"
+	"github.com/go-programming-tour-book/blog-service/internal/entity/request"
+	"github.com/go-programming-tour-book/blog-service/internal/entity/response"
 	"github.com/go-programming-tour-book/blog-service/internal/model"
-	"github.com/go-programming-tour-book/blog-service/internal/model/request"
-	"github.com/go-programming-tour-book/blog-service/internal/model/response"
 )
 
 //单个文章

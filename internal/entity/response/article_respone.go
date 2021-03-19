@@ -1,8 +1,8 @@
 package response
 
 import (
+	"github.com/go-programming-tour-book/blog-service/internal/entity/common"
 	"github.com/go-programming-tour-book/blog-service/internal/model"
-	"github.com/go-programming-tour-book/blog-service/internal/model/common"
 )
 
 //返回数据结构

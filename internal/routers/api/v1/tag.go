@@ -3,9 +3,9 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-programming-tour-book/blog-service/global"
-	"github.com/go-programming-tour-book/blog-service/internal/model/common"
-	"github.com/go-programming-tour-book/blog-service/internal/model/request"
-	r "github.com/go-programming-tour-book/blog-service/internal/model/response"
+	"github.com/go-programming-tour-book/blog-service/internal/entity/common"
+	"github.com/go-programming-tour-book/blog-service/internal/entity/request"
+	r "github.com/go-programming-tour-book/blog-service/internal/entity/response"
 	"github.com/go-programming-tour-book/blog-service/internal/service"
 	"github.com/go-programming-tour-book/blog-service/pkg/app"
 	"github.com/go-programming-tour-book/blog-service/pkg/convert"
