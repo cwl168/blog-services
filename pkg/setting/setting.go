@@ -14,6 +14,7 @@ type Setting struct {
 func NewSetting(configs ...string) (*Setting, error) {
 	vp := viper.New()
 	vp.SetConfigName("config")
+	//可能存在多个配置文件
 	for _, config := range configs {
 		if config != "" {
 			vp.AddConfigPath(config)

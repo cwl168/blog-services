@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"embed"
+	_ "embed"
 	_ "expvar"
 	"flag"
 	"fmt"
@@ -26,6 +28,9 @@ import (
 	"github.com/go-programming-tour-book/blog-service/pkg/validator"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
+
+//go:embed configs/*
+var f embed.FS
 
 var (
 	port      string
@@ -131,6 +136,7 @@ func setupFlag() error {
 
 func setupSetting() error {
 	fmt.Println(strings.Split(config, ","))
+	os.Exit(0)
 	s, err := setting.NewSetting(strings.Split(config, ",")...)
 	if err != nil {
 		return err
