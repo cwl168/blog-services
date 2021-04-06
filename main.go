@@ -29,7 +29,7 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-//go:embed configs/*
+//go:embed configs/config.yaml
 var f embed.FS
 
 var (
@@ -135,9 +135,10 @@ func setupFlag() error {
 }
 
 func setupSetting() error {
-	fmt.Println(strings.Split(config, ","))
-	os.Exit(0)
 	s, err := setting.NewSetting(strings.Split(config, ",")...)
+	if err != nil {
+		return err
+	}
 	if err != nil {
 		return err
 	}
