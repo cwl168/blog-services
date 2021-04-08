@@ -2,8 +2,7 @@ package main
 
 import (
 	"context"
-	"embed"
-	_ "embed"
+	//_ "embed"
 	_ "expvar"
 	"flag"
 	"fmt"
@@ -29,8 +28,8 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-//go:embed configs/config.yaml
-var f embed.FS
+/*go:embed configs/config.yaml
+var f embed.FS*/
 
 var (
 	port      string
@@ -88,7 +87,7 @@ func main() {
 		return
 	}
 	//配置热更新测试
-	log.Printf("Main ReadTimeout:[%v],[%T]\n", global.ServerSetting.ReadTimeout, global.ServerSetting.ReadTimeout)
+	//log.Printf("Main ReadTimeout:[%v],[%T]\n", global.ServerSetting.ReadTimeout, global.ServerSetting.ReadTimeout)
 
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()

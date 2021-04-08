@@ -3,6 +3,17 @@
 blog-service 博客后端
 是《Go 语言编程之旅：一起用 Go 做项目》中的项目，是第二章 [HTTP 应用：写一个完整的博客后端] 的附属源码。
 
+# docker容器运行
+docker-compose up --build  或者 docker-compose up -d(后台运行方式)。如果修改重新运行 docker-compose build blog
+
+提交到dockerhub：
+
+docker commit -a "blog-service-test-v2" -m "blog-sercice-v2" 5b041ccc26c3 cwllnmp/blog-service:v2  (或者  docker container commit 5b041ccc26c3 cwllnmp/blog-service:v3 )提交本地镜像
+
+docker push cwllnmp/blog-service:v1 （或者docker image push cwllnmp/blog-service:v3） 推送远程仓库
+
+访问如：http://127.0.0.1:8889/auth?app_key=cwl&app_secret=123456
+
 ## 关于本书
 
 本书涵盖 Go 语言的各大经典实战，不介绍 Go 语言的语法基础，内容面向项目实践，同时会针对核心细节进行分析。而在实际项目迭代中，常常会出现或多或少的事故，因此本书也针对 Go 语言的大杀器（分析工具）以及常见问题进行了全面讲解。
