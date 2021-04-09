@@ -12,6 +12,7 @@ import (
 	zh_translations "github.com/go-playground/validator/v10/translations/zh"
 )
 
+//r.Use(middleware.Translations())   国际化处理 这个中间件 在高并发下面出现   concurrent map read and map write
 func Translations() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		uni := ut.New(en.New(), zh.New(), zh_Hant_TW.New())
